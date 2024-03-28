@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* CHANGE CURRENT ICON TO ARROW DIRECTIONS */
+        body{
+            background-image: url('https://opengameart.org/sites/default/files/background0.png');
+        }
+        button{
+            border-radius: 5px;
+            margin: 10px;
+            width: 70px;
+            height: 70px;
+            background-color: darkmagenta;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="clock">Time Left : 20</h1>
+    <h1 id="points">Score : 0</h1>
+    <button id="b1"></button>
+    <button id="b2"></button>
+    <button id="b3"></button>
+    <button id="b4"></button>
+    
+    <button id="b5"></button>
+    <button id="b6"></button>
+    <button id="b7"></button>
+    <button id="b8"></button>
+    <br>
+    <button id="b9"></button>
+    <button id="b10"></button>
+    <button id="b11"></button>
+    <button id="b12"></button>
+    
+    <button id="b13"></button>
+    <button id="b14"></button>
+    <button id="b15"></button>
+    <button id="b16"></button>
+
+    <br>
+
+    <button id="b17"></button>
+    <button id="b18"></button>
+    <button id="b19"></button>
+    <button id="b20"></button>
+    
+    <button id="b21"></button>
+    <button id="b22"></button>
+    <button id="b23"></button>
+    <button id="b24"></button>
+    <br>
+    <button id="b25"></button>
+    <button id="b26"></button>
+    <button id="b27"></button>
+    <button id="b28"></button>
+    
+    <button id="b29"></button>
+    <button id="b30"></button>
+    <button id="b31"></button>
+    <button id="b32"></button>
+
+
+</body>
+<script>
+    var time=20;
+
+    function showTime(){
+        document.getElementById("clock").innerText="Time Left : "+time;
+    }
+
+    var gameOver=false;
+
+    setInterval(function(){
+        if(time<=0){
+            gameOver=true;
+            document.getElementById("clock").innerText="TIME OUT ! YOU LOST !";
+            return;
+        }
+        time-=1;
+        showTime();
+    },1000);
+
+    
+
+    var curr=1;
+    let r=4,c=8;
+    var score=0;
+
+    var candies=[0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0
+                ];
+
+    function glow(num,x){  //left,up right,down
+        document.getElementById("b"+num).style.backgroundColor="gold";
+        
+        document.getElementById("b"+num).style.height="75px";
+        document.getElementById("b"+num).style.width="75px";
+
+      
+
+        document.getElementById("b"+x).style.backgroundColor="darkmagenta";
+        document.getElementById("b"+x).style.height="70px";
+        document.getElementById("b"+x).style.width="70px";
+        document.getElementById("b"+x).style.backgroundImage="none";
+
+    }
+
+    function randomNumber() {
+      return Math.floor(Math.random() * 32 + 1);
+    }
+
+    function empty(){
+        for(var i=0;i<32;i++){
+            if(candies[i]==1) return false;
+        }
+        return true;
+    }
+
+    function candy(){
+        let x=randomNumber();
+        if(x==curr){
+            if(curr==32) x=4;    //avoiding candy formation at curr button
+            else x=curr+1;
+        }
+        candies[x]=1;
+        document.getElementById("b"+x).style.backgroundImage="url('https://www.nicepng.com/png/detail/13-133005_candy-icon.png')";
+        document.getElementById("b"+x).style.backgroundSize="cover";
+
+    }
+
+    function spawn(){
+        let num=randomNumber()%8+1;
+        for(var i=0;i<num;i++){
+            candy();
+        }
+    }
+
+    spawn();
+
+    glow(1,2);
+    let old=curr;
+
+     document.onkeydown = function(e) {
+            switch (e.keyCode) {
+                case 37:
+                    if(gameOver){
+                        document.getElementById("points").innerText="Total Score : "+score;
+                        break;
+                    }
+                    console.log("left");
+                    old=curr;
+                    if(curr%c==1){
+                        curr+=c-1;
+                    }
+                    else{
+                        curr--;
+                    }
+                    if(candies[curr]==1){
+                        candies[curr]=0;
+                        score+=100;
+                        document.getElementById("points").innerText="Score : "+score;
+                        document.getElementById("b"+curr).style.removeProperty("background-image");
+                        if(empty()==true) spawn();
+                        
+
+                    }
+                    glow(curr,old);
+                    console.log(curr);
+                    break;
+
+
+
+
+                case 38:
+                    if(gameOver){
+                        document.getElementById("points").innerText="Total Score : "+score;
+                        break;
+                    }
+                    console.log("up");
+                    old=curr;
+                  
+                    if(curr/c<=1){  // in first row
+                        curr=c*r - (c-curr);  //last row
+                    }
+                    else{
+                        curr-=c;   // row above
+                    }
+                    if(candies[curr]==1){
+                        candies[curr]=0;
+                        score+=100;
+                        document.getElementById("points").innerText="Score : "+score;
+                        document.getElementById("b"+curr).style.removeProperty("background-image");
+                        if(empty()) spawn();
+                    }
+                    glow(curr,old);
+                    console.log(curr);
+                    break;
+
+
+
+
+                case 39:
+                    if(gameOver){
+                        document.getElementById("points").innerText="Total Score : "+score;
+                        break;
+                    }
+
+                console.log("right");
+                    old=curr;
+                    if(curr%c==0){
+                        curr-=c-1;
+                    }
+                    else{
+                        curr++;
+                    }
+                    if(candies[curr]==1){
+                        candies[curr]=0;
+                        score+=100;
+                        document.getElementById("points").innerText="Score : "+score;
+                        document.getElementById("b"+curr).style.removeProperty("background-image");
+                        if(empty()) spawn();
+                    }
+                    glow(curr,old);
+                    console.log(curr);
+                    break;
+
+
+                case 40:
+                    if(gameOver){
+                        document.getElementById("points").innerText="Total Score : "+score;
+                        break;
+                    }
+                console.log("down");
+                    old=curr;
+                  
+                    if(curr>=r*c-c+1){  // in last row
+                        curr-=c*(r-1);  //last row
+                    }
+                    else{
+                        curr+=c;   // row below
+                    }
+                    if(candies[curr]==1){
+                        candies[curr]=0;
+                        score+=100;
+                        document.getElementById("points").innerText="Score : "+score;
+                        document.getElementById("b"+curr).style.removeProperty("background-image");
+                        if(empty()) spawn();
+                    }
+                    glow(curr,old);
+                    console.log(curr);
+                    break;
+            }
+        };
+</script>
+</html>
